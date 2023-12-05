@@ -6,22 +6,20 @@ import 'general.dart';
 import 'navigate_manager.dart';
 
 class BookList extends StatelessWidget {
-  const BookList({
-    super.key,
-  });
+  const BookList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        return _BookItem(index);
+        return _BookItem(index: index);
       },
     );
   }
 }
 
 class _BookItem extends StatefulWidget {
-  const _BookItem(this.index);
+  const _BookItem({required this.index});
   final int index;
   static final List<Book> books = [];
   @override
@@ -35,7 +33,12 @@ class _BookItemState extends State<_BookItem> {
     super.initState();
     int id = widget.index;
     book = Book(id, "Kitap ismi $id", "Konu ${id + 1},konu ${id + 2},konu ${id + 3}", "$id/02/2023", false);
+    // book.numberWidget = ;
     _BookItem.books.add(book);
+  }
+
+  refresh() {
+    setState(() {});
   }
 
   @override
@@ -43,7 +46,7 @@ class _BookItemState extends State<_BookItem> {
     return Padding(
       padding: const EdgeInsets.all(ProjectSizes.listSpace),
       child: Container(
-        decoration: ProjectDesigns().bookBacground,
+        decoration: ProjectDesigns().bookBackground,
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(ProjectSizes.bookItemRadius)),
           child: Stack(children: [
@@ -73,8 +76,9 @@ class _BookItemState extends State<_BookItem> {
                 ],
               ),
             ),
-            _BookNumber(number: widget.index + 1, book: book),
-            const _ReadDetailsButton()
+            _BookNumber(book: book),
+            // book.numberWidget.widget,
+            _ReadDetailsButton(book: book, callback: refresh)
           ]),
         ),
       ),
@@ -83,8 +87,9 @@ class _BookItemState extends State<_BookItem> {
 }
 
 class _ReadDetailsButton extends StatefulWidget with NavigateManager {
-  // ignore: unused_element
-  const _ReadDetailsButton({super.key});
+  final Book book;
+  final callback;
+  const _ReadDetailsButton({required this.book, required this.callback});
 
   @override
   State<_ReadDetailsButton> createState() => _ReadDetailsButtonState();
@@ -98,17 +103,13 @@ class _ReadDetailsButtonState extends State<_ReadDetailsButton> with NavigateMan
       bottom: 0,
       child: IconButton(
         onPressed: () async {
-          final response = await navigate<NavigateResponse>(context, const BookDetails());
+          final response = await navigate<Book>(context, BookDetails(book: widget.book));
           if (response != null) {
-            if (response.response == true) {
-              for (var book in _BookItem.books) {
-                if (book.id == response.id) {
-                  setState(() {
-                    book.state = true;
-                  });
-                }
-              }
-            }
+            // print(widget.book.state);
+            response.state = true;
+            widget.callback();
+
+            // widget.book.numberWidget.updateBookNumber();
           }
         },
         icon: const Icon(ProjectIcons.openDetailsIcon),
@@ -118,8 +119,7 @@ class _ReadDetailsButtonState extends State<_ReadDetailsButton> with NavigateMan
 }
 
 class _BookNumber extends StatefulWidget {
-  const _BookNumber({required this.number, required this.book});
-  final int number;
+  const _BookNumber({required this.book});
   final Book book;
 
   @override
@@ -127,6 +127,8 @@ class _BookNumber extends StatefulWidget {
 }
 
 class _BookNumberState extends State<_BookNumber> {
+  void updateBookNumber() => setState(() {});
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -141,7 +143,7 @@ class _BookNumberState extends State<_BookNumber> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "#${widget.number}",
+            "#${widget.book.id + 1}",
             style:
                 const TextStyle(fontSize: ProjectSizes.bookNumberSize, fontWeight: ProjectSizes.bookNumberFontWeight),
           ),

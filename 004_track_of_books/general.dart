@@ -28,7 +28,7 @@ class ProjectColors {
 }
 
 class ProjectDesigns {
-  final bookBacground = BoxDecoration(
+  final bookBackground = BoxDecoration(
     border: Border.all(width: 1, color: ProjectColors.bookItemBorderColor),
     borderRadius: const BorderRadius.all(Radius.circular(ProjectSizes.bookItemRadius)),
     color: ProjectColors.bookItemBackgroundColor,
