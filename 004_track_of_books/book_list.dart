@@ -88,7 +88,7 @@ class _BookItemState extends State<_BookItem> {
 
 class _ReadDetailsButton extends StatefulWidget with NavigateManager {
   final Book book;
-  final callback;
+  final Function callback;
   const _ReadDetailsButton({required this.book, required this.callback});
 
   @override
