@@ -10,5 +10,6 @@ final class CustomTheme {
   ThemeData get darkThemeData => ThemeData(
         useMaterial3: true,
         colorScheme: CustomColorScheme.darkColorScheme,
+        // listTileTheme: const ListTileThemeData(contentPadding: EdgeInsets.symmetric(horizontal: 24.0)),
       );
 }
